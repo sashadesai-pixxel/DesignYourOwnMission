@@ -442,95 +442,87 @@ const RANK = ['strong','possible','challenging','problem'];
 const worst = (a,b) => RANK.indexOf(a) > RANK.indexOf(b) ? a : b;
 
 const ORBITS = {
- leo:{name:'Low Earth orbit', cost:8, note:'Closest to Earth. Circles the planet in about 90 minutes.', batt:2},
- meo:{name:'Medium Earth orbit', cost:15, note:'Higher up. Sees a wider area at once, for longer.', batt:2},
- geo:{name:'Geostationary orbit', cost:25, note:'About 36,000 km above the equator. Appears to stay over one region.', batt:1},
- spec:{name:'Specialised orbit', cost:30, note:'A path shaped around one mission, often far from Earth or over one region.', batt:1}
+ leo:{name:'Low Earth orbit', cost:8, note:'Closest to Earth. Completes an orbit in roughly 90\u2013120 minutes.', batt:2},
+ meo:{name:'Medium Earth orbit', cost:15, note:'Higher above Earth, offering wider coverage and longer visibility.', batt:2},
+ geo:{name:'Geostationary orbit', cost:25, note:'About 36,000 km above the equator. Appears stationary over one region.', batt:1},
+ spec:{name:'Specialised orbit', cost:30, note:'A mission-specific path for targeted coverage or distant observations.', batt:1}
 };
 const ARRAYS = {
  s:{name:'Small solar array', cost:5, lvl:1, note:'Lower power generation.'},
  m:{name:'Medium solar array', cost:10, lvl:2, note:'Moderate power generation.'},
- l:{name:'Large solar array', cost:16, lvl:3, note:'High power generation.'},
+ l:{name:'Large solar array', cost:16, lvl:3, note:'Supports systems with high power demands.'},
  xl:{name:'Extra-large solar array', cost:22, lvl:4, note:'Very high power generation.'}
 };
 const BATTS = {
- std:{name:'Standard battery', cost:4, lvl:1, note:'Basic energy storage.'},
- high:{name:'High-capacity battery', cost:8, lvl:2, note:'More stored energy.'},
- perf:{name:'High-performance battery', cost:12, lvl:3, note:'For higher-demand missions.'}
+ std:{name:'Standard battery', cost:4, lvl:1, note:'Stores energy for basic spacecraft operations.'},
+ high:{name:'High-capacity battery', cost:8, lvl:2, note:'Stores more energy for extended operations.'},
+ perf:{name:'High-performance battery', cost:12, lvl:3, note:'Provides greater energy storage for demanding missions.'}
 };
 const POINTS = {
- basic:{name:'Basic pointing', cost:4, lvl:1, note:'For missions that only need general spacecraft orientation.'},
- precise:{name:'Precise pointing', cost:15, lvl:2, note:'For missions that need reliable targeting of specific locations.'},
- high:{name:'High-precision pointing', cost:25, lvl:3, note:'For missions where small pointing errors matter.'},
- ultra:{name:'Ultra-precise pointing', cost:30, lvl:4, note:'For highly demanding instruments.'}
+ basic:{name:'Basic pointing', cost:4, lvl:1, note:'Maintains the spacecraft\u2019s general orientation.'},
+ precise:{name:'Precise pointing', cost:15, lvl:2, note:'Accurately targets specific locations.'},
+ high:{name:'High-precision pointing', cost:25, lvl:3, note:'Maintains stable pointing for detailed observations.'},
+ ultra:{name:'Ultra-precise pointing', cost:30, lvl:4, note:'Provides exceptional stability for highly sensitive instruments.'}
 };
 const RADIOS = {
- basic:{name:'Basic radio', cost:2, lvl:1, note:'Sends smaller amounts of data.'},
- med:{name:'Medium-speed radio', cost:4, lvl:2, note:'Sends more data.'},
- high:{name:'High-speed radio', cost:6, lvl:3, note:'Sends large amounts of data.'},
- vhigh:{name:'Very high-speed radio', cost:9, lvl:4, note:'Sends very large amounts of data.'},
- laser:{name:'Laser communication', cost:14, lvl:5, note:'Extremely high capacity, and a narrow beam that must be aimed precisely.'}
+ basic:{name:'Basic radio', cost:2, lvl:1, note:'Transmits small amounts of data.'},
+ med:{name:'Medium-speed radio', cost:4, lvl:2, note:'Handles moderate data transmission needs.'},
+ high:{name:'High-speed radio', cost:6, lvl:3, note:'Sends large volumes of data efficiently.'},
+ vhigh:{name:'Very high-speed radio', cost:9, lvl:4, note:'Supports high-volume, rapid data transmission.'},
+ laser:{name:'Laser communication', cost:14, lvl:5, note:'Enables very high data rates using precisely aimed laser beams.'}
 };
 const BUSES = {
- s:{name:'Small spacecraft', cost:12, lvl:1, note:'Compact and inexpensive.'},
- m:{name:'Medium spacecraft', cost:26, lvl:2, note:'A balance of size and capability.'},
- l:{name:'Large spacecraft', cost:38, lvl:3, note:'More room for power and equipment.'},
- xl:{name:'Extra-large spacecraft', cost:50, lvl:4, note:'Built for demanding missions.'}
+ s:{name:'Small spacecraft', cost:12, lvl:1, note:'Compact, inexpensive platforms for simpler missions.'},
+ m:{name:'Medium spacecraft', cost:26, lvl:2, note:'Balances size, capacity, and capability.'},
+ l:{name:'Large spacecraft', cost:38, lvl:3, note:'More room for instruments, power, and other equipment.'},
+ xl:{name:'Extra-large spacecraft', cost:50, lvl:4, note:'Maximum capacity for mission equipment and supporting systems.'}
 };
 const PROPS = {
  none:{name:'No propulsion', cost:0, mass:0, note:'Little or no planned manoeuvring after deployment.'},
  cold:{name:'Cold gas', cost:5, mass:1, note:'Stored gas released through a nozzle. Simple, low thrust.'},
- chem:{name:'Chemical', cost:10, mass:2, note:'High thrust for quick or large manoeuvres. The trade is mass and volume: propellant and tanks take up room and weight, not capability.'},
+ chem:{name:'Chemical', cost:10, mass:2, note:'High thrust for quick or large manoeuvres. The trade-off is mass and volume: propellant and tanks take up room and weight, not capability.'},
  elec:{name:'Electric', cost:12, mass:1, note:'Very efficient, but gentle and slow to act.'},
  hybrid:{name:'Hybrid', cost:18, mass:3, note:'Combines different propulsion approaches.'}
 };
 const MISSIONS = [
  { id:'eo', name:'Earth observation', budget:150,
-   line:'See and measure Earth.',
-   blurb:'Observe the planet using standard optical, multispectral, hyperspectral, thermal or radar sensors.',
+   line:'See Earth in a new light.',
+   blurb:'Observe and measure Earth\u2019s surface using standard optical, multispectral, hyperspectral, thermal, or radar sensors.',
    needs:['Suitable sensing','Accurate pointing','Data capacity','Power'],
-   asks:{orbit:'To measure the surface in detail, this spacecraft has to stay close to Earth.',
-         power:'The sensor runs over daylight land on every pass, so power has to keep up.',
-         control:'Every image has to line up with the last one, so aim matters.',
-         radio:'Spectral sensors record every scene many times over, which makes a lot of data to send home.'},
-   orbitFit:{leo:['strong','Close enough to pick out detail, and it passes over new ground on every loop. The radiation environment here is also gentler than higher orbits.'],
+   orbitFit:{leo:['strong','Close enough to capture surface detail, while passing over new ground on successive orbits. Generally experiences less trapped radiation than higher orbits.'],
              meo:['possible','Workable, but further from the surface it is measuring, and in a harsher radiation belt.'],
              geo:['challenging','From this height the spacecraft sees a whole hemisphere at once, and reaching this orbit costs far more.'],
-             spec:['possible','A specialised path can suit this mission, but it costs the most to reach.']},
+             spec:['possible','A specialised orbit can suit particular observation needs, but may introduce additional complexity and cost.']},
    pointFit:{basic:'possible', precise:'strong', high:'strong', ultra:'strong'},
    propFit:{none:'possible', cold:'possible', chem:'strong', elec:'strong', hybrid:'strong'},
    warn:'Your sensor is excellent, but your spacecraft does not have enough communications capacity to handle all the data it produces.',
    can:['Measure Earth\u2019s surface with its chosen sensor','Point accurately at Earth','Send its data to the ground'],
    payloads:[
     {id:'opt', name:'Standard optical camera', cost:8, fit:'strong', data:1, power:1, size:1, point:3,
-     art:'lens', job:'standard optical camera that photographs the surface', note:'Records red, green and blue light, so it shows what the surface looks like in daylight and clear skies. It cannot tell you what things are made of.'},
+     art:'lens', job:'standard optical camera that photographs the surface', note:'Records red, green, and blue light to capture images of Earth\u2019s surface in daylight and clear skies. It provides limited information about material composition.'},
     {id:'ms', name:'Multispectral sensor', cost:12, fit:'strong', data:2, power:2, size:2, point:3,
      art:'bands', job:'sensor that reads a few bands of light', note:'Reads a handful of broad bands, enough to tell vegetation, water, soil and built surfaces apart.'},
     {id:'therm', name:'Thermal sensor', cost:12, fit:'strong', data:2, power:2, size:2, point:2,
      art:'thermal', job:'sensor that measures heat', note:'Measures heat rather than reflected light, which suits fires, water stress and urban heat more than general mapping.'},
     {id:'hsi', name:'Hyperspectral sensor', cost:20, fit:'strong', data:3, power:3, size:2, point:3,
-     art:'spectral', job:'sensor that reads hundreds of bands of light', note:'Measures reflected light across many narrow bands, which reveals materials and conditions a conventional image cannot show. It produces more data than a sharper camera does.'},
+     art:'spectral', job:'sensor that reads hundreds of bands of light', note:'Measures reflected light across hundreds of narrow spectral bands, revealing differences in materials and surface conditions. It also generates large volumes of data.'},
     {id:'ahsi', name:'Advanced hyperspectral sensor', cost:28, fit:'strong', data:4, power:3, size:3, point:4,
-     art:'spectral2', job:'sensor that reads the spectrum in fine detail', note:'More bands and finer detail, and more data, power, room and pointing accuracy needed to support it.'},
+     art:'spectral2', job:'sensor that reads the spectrum in fine detail', note:'More bands and finer detail, and more data, power, room, and pointing accuracy needed to support it.'},
     {id:'radar', name:'Radar', cost:22, fit:'strong', data:3, power:4, size:3, point:2,
-     art:'radar', job:'radar that sees through cloud and darkness', note:'Uses radar instead of light, so it sees through cloud and works at night. It needs a lot of power.'}]},
+     art:'radar', job:'radar that sees through cloud and darkness', note:'Uses radar instead of light, so it sees through cloud cover and works at night. It needs a lot of power.'}]},
 
  { id:'comms', name:'Communication satellite', budget:145,
-   line:'Connect people and systems.',
-   blurb:'Relay information between Earth, satellites and users.',
+   line:'Keep the world connected.',
+   blurb:'Relay information between Earth, satellites, and users across vast distances.',
    needs:['Comms capacity','Coverage','Power','Data handling'],
-   asks:{orbit:'Coverage is everything here: who can see the spacecraft, and for how long.',
-         power:'Transmitters are hungry. This is one of the most power-hungry jobs in orbit.',
-         control:'Antennas have to stay aimed at the right part of Earth.',
-         radio:'The radio is the mission, not just the way data gets home.'},
    orbitFit:{leo:['possible','It sweeps past overhead in minutes, so continuous coverage needs many spacecraft working together.'],
              meo:['possible','High enough to cover a wide area for a long stretch of each orbit, though the radiation belts here are harsher.'],
              geo:['strong','It keeps pace with Earth\u2019s spin, so it stays over one region and ground antennas can point at one spot.'],
-             spec:['possible','A specialised path can serve particular regions well, at the highest cost to reach.']},
+             spec:['possible','A specialised orbit can provide targeted coverage of particular regions, depending on the mission\u2019s requirements.']},
    pointFit:{basic:'strong', precise:'strong', high:'possible', ultra:'possible'},
    propFit:{none:'possible', cold:'possible', chem:'strong', elec:'strong', hybrid:'strong'},
    warn:'Your communications payload is powerful, but your power system may struggle to run it continuously.',
-   can:['Carry traffic between users','Hold its position over its service area','Run its transmitters continuously'],
+   can:['Carry traffic between users','Maintain coverage of its service area','Run its transmitters continuously'],
    payloads:[
     {id:'basic', name:'Basic communications', cost:10, fit:'strong', data:3, power:2, size:2, point:1,
      art:'horn', job:'relay that carries voice and light traffic', note:'Handles voice and light traffic. Modest capacity for a mission built around capacity.'},
@@ -542,73 +534,61 @@ const MISSIONS = [
      art:'crosslink', job:'link that passes traffic between spacecraft', note:'Passes traffic between spacecraft rather than serving users on the ground directly.'}]},
 
  { id:'data', name:'Orbital data centre', budget:175,
-   line:'Compute in space.',
-   blurb:'Process and store data while in orbit.',
+   line:'Bring computing into orbit.',
+   blurb:'Process and store data in space, reducing the need to send everything back to Earth.',
    needs:['Computing power','Electrical power','Satellite links','Capacity'],
-   asks:{orbit:'Where you put computers decides how long their answers take to reach Earth.',
-         power:'Computers run around the clock. This mission lives or dies on power.',
-         control:'Data centres in orbit rarely work alone. Laser links to other spacecraft have to be aimed precisely and held there.',
-         radio:'Results are useless until they reach the ground or the next spacecraft.'},
    orbitFit:{leo:['strong','Close to the ground stations it feeds, so results come back quickly, and the radiation environment is gentler.'],
              meo:['possible','Workable, though further from the ground it serves and inside a harsher radiation belt.'],
              geo:['possible','Always in sight of the same ground station, but the distance adds delay.'],
-             spec:['possible','Possible, but a specialised path adds cost without adding much here.']},
+             spec:['possible','A specialised orbit may support specific requirements, but can add complexity without clear advantages for this mission.']},
    pointFit:{basic:'possible', precise:'strong', high:'strong', ultra:'possible'},
    propFit:{none:'possible', cold:'challenging', chem:'strong', elec:'strong', hybrid:'strong'},
    warn:'Your computing system can process huge amounts of data, but the spacecraft does not generate enough power to run it at full capacity.',
    can:['Process data in orbit instead of sending all of it down','Hold its links to other spacecraft steady','Send finished work onward quickly'],
    payloads:[
     {id:'proc', name:'Basic processor', cost:10, fit:'strong', data:2, power:2, size:2, point:2,
-     art:'chip', job:'processor that handles modest workloads', note:'Handles modest workloads. Fine, but not much of a data centre.'},
+     art:'chip', job:'processor that handles modest workloads', note:'Handles modest computing workloads with limited processing capacity.'},
     {id:'ai', name:'AI processor', cost:20, fit:'strong', data:3, power:4, size:3, point:2,
-     art:'chipcore', job:'processor built for AI work', note:'Chips built for heavy AI work. The most power-hungry thing you can put in orbit.'},
+     art:'chipcore', job:'processor built for AI work', note:'Designed for demanding AI workloads, with high processing power and energy requirements.'},
     {id:'store', name:'Large storage', cost:15, fit:'strong', data:2, power:2, size:3, point:2,
      art:'stack', job:'storage for data in orbit', note:'Holds a great deal of data, but does not process any of it.'},
     {id:'link', name:'Inter-satellite laser relay', cost:20, fit:'strong', data:4, power:3, size:3, point:3,
-     art:'laser', job:'laser relay that links spacecraft', note:'Moves work between spacecraft over laser links. Those beams are narrow, so they need precise pointing held steady.'},
+     art:'laser', job:'laser relay that links spacecraft', note:'Transfers data between spacecraft using laser links that require extremely precise pointing.'},
     {id:'hpc', name:'High-performance computing', cost:28, fit:'strong', data:3, power:4, size:4, point:2,
-     art:'chipgrid', job:'computer that handles heavy workloads', note:'Serious computing capacity, with the power and room needed to match.'},
+     art:'chipgrid', job:'computer that handles heavy workloads', note:'Handles complex computing workloads, with significant power and space requirements.'},
     {id:'both', name:'Computing and storage system', cost:35, fit:'strong', data:4, power:4, size:4, point:2,
-     art:'chipstack', job:'data storage systems in orbit', note:'Processes and keeps data in the same place, which is the whole idea of a data centre in orbit.'}]},
+     art:'chipstack', job:'data storage systems in orbit', note:'Processes and stores data in orbit, combining two essential data centre functions.'}]},
 
  { id:'scope', name:'Space telescope', budget:160,
-   line:'Look beyond Earth.',
-   blurb:'Observe distant objects using specialised instruments.',
+   line:'Explore beyond Earth.',
+   blurb:'Observe distant stars, galaxies, and other celestial objects using specialised instruments.',
    needs:['Sensitive optics','Stability','Steady power','Data return'],
-   asks:{orbit:'A telescope needs a dark, steady place with a clear view.',
-         power:'Steady, modest power matters more than lots of it.',
-         control:'Stability is the real constraint here. Faint objects take long exposures, and the spacecraft has to hold dead still for all of it, not merely aim in the right direction.',
-         radio:'Observations are large, and the further out you go, the harder they are to send.'},
    orbitFit:{leo:['possible','Earth keeps swinging into view, and the telescope moves in and out of sunlight on every loop, which makes it hard to stay thermally steady.'],
-             meo:['possible','Steadier than skimming close to Earth, but Earth is still close and bright, and the radiation here is harsher.'],
-             geo:['possible','A steady spot, though Earth and the Sun are still nearby and warm.'],
+             meo:['possible','Greater distance from Earth can reduce some observational interference, but radiation exposure and thermal conditions remain important considerations.'],
+             geo:['possible','Offers relatively consistent observing conditions, although Earth and Sun constraints still influence telescope operations.'],
              spec:['strong','A path chosen for darkness and stability, which is exactly what faint objects need.']},
    pointFit:{basic:'problem', precise:'challenging', high:'strong', ultra:'strong'},
    propFit:{none:'possible', cold:'possible', chem:'strong', elec:'strong', hybrid:'strong'},
    warn:'Your telescope can resolve fine detail, but the spacecraft cannot hold steady enough through a long exposure to use it.',
-   can:['Observe faint and distant objects','Hold a target still through long exposures','Return its observations to Earth'],
+   can:['Observe faint and distant objects','Maintain precise pointing during long exposures','Return its observations to Earth'],
    payloads:[
     {id:'opt', name:'Optical telescope', cost:18, fit:'strong', data:2, power:2, size:3, point:3,
      art:'tube', job:'telescope that collects visible light', note:'Collects visible light. The bigger the mirror, the fainter the object it can see.'},
     {id:'ir', name:'Infrared telescope', cost:22, fit:'strong', data:3, power:3, size:3, point:4,
-     art:'tubecold', job:'telescope that sees heat', note:'Sees heat rather than visible light, which reveals objects hidden behind dust. It must be kept very cold and very still.'},
+     art:'tubecold', job:'telescope that sees heat', note:'Detects infrared radiation, helping reveal objects obscured by dust. Some infrared instruments require extremely low operating temperatures.'},
     {id:'uv', name:'Ultraviolet telescope', cost:22, fit:'strong', data:2, power:2, size:3, point:4,
-     art:'tubethin', job:'telescope that sees ultraviolet light', note:'Sees ultraviolet light, which Earth\u2019s atmosphere blocks. Only possible from space.'},
+     art:'tubethin', job:'telescope that sees ultraviolet light', note:'Observes ultraviolet light, much of which is blocked by Earth\u2019s atmosphere.'},
     {id:'spec', name:'Spectrometer', cost:15, fit:'strong', data:2, power:2, size:2, point:3,
      art:'prism', job:'spectrometer that reads what objects are made of', note:'Splits incoming light to show what an object is made of. Usually works alongside a telescope rather than instead of one.'},
     {id:'suite', name:'Imager and spectrometer suite', cost:30, fit:'strong', data:3, power:3, size:3, point:3,
-     art:'suite', job:'telescope and spectrometer working together', note:'An imaging telescope and a spectrometer on one spacecraft, so a target can be pictured and analysed on the same pass. It needs room, and it has to stay rock steady.'},
+     art:'suite', job:'telescope and spectrometer working together', note:'Combines imaging and spectroscopy to capture and analyse distant objects. Requires space and precise pointing stability.'},
     {id:'adv', name:'Advanced telescope', cost:30, fit:'strong', data:3, power:2, size:3, point:4,
      art:'tubebig', job:'telescope built for the faintest objects', note:'The most capable instrument here, and the most demanding on room, stability and budget.'}]},
 
  { id:'intel', name:'Special remote sensing', budget:175,
-   line:'Gather information from above.',
-   blurb:'Collect radar imagery and radio-frequency signals, usually as a group of spacecraft flying in formation.',
+   line:'Detect signals from space.',
+   blurb:'Collect radar imagery and radio-frequency signals to observe specific areas and activities on Earth, using spacecraft that can operate in formation.',
    needs:['Specialised orbit','Formation flying','Data capacity','Power'],
-   asks:{orbit:'These spacecraft rarely fly alone. A formation has to share a carefully shaped path so its members stay together and cover the same ground.',
-         power:'Radar and signal receivers draw heavily, and they draw the most when passing over a target.',
-         control:'Antennas and radar apertures have to be aimed and held while the spacecraft passes overhead.',
-         radio:'What the formation collects has to come down quickly, and securely.'},
    orbitFit:{leo:['possible','Close to its targets, but holding a formation together here takes constant work against drag.'],
              meo:['possible','Wider coverage for each spacecraft, at the cost of detail and a harsher radiation environment.'],
              geo:['challenging','Far too distant for the signal strength and detail this mission depends on.'],
@@ -616,7 +596,7 @@ const MISSIONS = [
    pointFit:{basic:'possible', precise:'strong', high:'strong', ultra:'possible'},
    propFit:{none:'challenging', cold:'possible', chem:'strong', elec:'strong', hybrid:'strong'},
    warn:'Your payload can collect a great deal, but the spacecraft cannot hold its formation or aim well enough to use it.',
-   can:['Collect radar imagery or radio signals over chosen areas','Hold formation with the rest of its group','Get what it collects back quickly'],
+   can:['Collect radar imagery or radio signals over chosen areas','Maintain formation with other spacecraft','Transmit collected data to the ground'],
    payloads:[
     {id:'rf', name:'Radio-frequency signals receiver', cost:25, fit:'strong', data:3, power:3, size:3, point:2,
      art:'dipoles', job:'receiver that listens for transmissions', note:'Listens for radar, radio, and other transmissions, and works out where they came from.'},
@@ -627,32 +607,32 @@ const MISSIONS = [
     {id:'wide', name:'Wideband signal recorder', cost:30, fit:'strong', data:4, power:3, size:4, point:2,
      art:'waves', job:'recorder that captures a wide slice of the spectrum', note:'Records a wide slice of the radio spectrum at once, which produces an enormous amount of raw data.'},
     {id:'ir', name:'Infrared sensor', cost:15, fit:'strong', data:2, power:2, size:2, point:3,
-     art:'thermal', job:'sensor that picks up heat at night', note:'Picks up heat, which shows activity at night. Useful alongside radar, thin on its own.'},
+     art:'thermal', job:'sensor that picks up heat at night', note:'Detects thermal radiation to observe heat signatures, including at night.'},
     {id:'opt', name:'Standard optical camera', cost:12, fit:'strong', data:2, power:1, size:2, point:3,
-     art:'lens', job:'standard optical camera that photographs the surface', note:'Red, green and blue light only: clear pictures in daylight and clear skies, which is exactly when radar and signal payloads are least needed.'}]}
+     art:'lens', job:'standard optical camera that photographs the surface', note:'Captures images in red, green and blue light, providing visual detail in daylight and clear skies.'}]}
 ];
 
 const STEPS = [
  {key:'orbit', num:'02', title:'Choose your orbit', q:'Where will your spacecraft fly?',
-  info:['Why does orbit matter?','Orbit decides where your spacecraft is, how often it passes over a place, how far its signals have to travel, and how much radiation it encounters.<br><br>Low Earth orbit is widely used for Earth observation and generally has a less intense radiation environment. Medium Earth orbit is higher and exposes spacecraft to more trapped radiation, making protection more important. Geostationary orbit, about 36,000 km above the equator, has an even harsher radiation environment.<br><br>Orbit is one of the biggest decisions you make, because it affects almost everything that follows.'],
+  info:['Why does orbit matter?','A satellite\u2019s orbit influences almost every aspect of its mission: the area it can observe, how frequently it passes over a location, the distance its signals must travel, and the conditions it encounters in space.<br><br>Different orbits offer different advantages. Low Earth Orbit is commonly used for Earth observation because its proximity allows satellites to capture greater surface detail. Medium Earth Orbit offers wider coverage but can expose spacecraft to higher levels of radiation. The Geostationary orbit allows satellites to maintain continuous coverage of a particular region, making it especially useful for communications and weather monitoring.<br><br>Choosing the right orbit is one of the first and most important decisions in satellite design, shaping the systems and capabilities your spacecraft will need.'],
   groups:[{key:'orbit', src:()=>ORBITS}]},
- {key:'payload', num:'03', title:'Choose your payload', q:'What does your spacecraft need to measure, communicate or compute?',
-  info:['What is a payload?','The payload is the part of the satellite that actually does the mission: taking images, measuring light, sending signals, processing data, or carrying out some other specialised task. The rest of the spacecraft provides the power, communications, control and other support the payload needs to work.'],
+ {key:'payload', num:'03', title:'Choose your payload', q:'What does your spacecraft need to measure, communicate, or compute?',
+  info:['What is a payload?','The payload is the equipment that performs a satellite\u2019s primary mission, whether that\u2019s capturing images, measuring light, transmitting signals, or processing data.<br><br>The rest of the spacecraft supports the payload by providing the power, communications, pointing accuracy, and other systems it needs to operate.'],
   groups:[{key:'payload', src:m=>Object.fromEntries(m.payloads.map(p=>[p.id,p]))}]},
- {key:'point', num:'04', title:'Choose your pointing system', q:'How precise does your spacecraft need to be?',
-  info:['How does a spacecraft know where it is pointing?','It takes more than one piece of hardware. Star trackers, Sun sensors, gyroscopes and magnetometers sense the spacecraft\u2019s orientation. Reaction wheels, magnetic torquers and thrusters then change or maintain that orientation. Software coordinates the two.<br><br>Sensors tell the spacecraft where it is pointing. Actuators change where it points. Software brings it all together.<br><br>The level you choose here represents the pointing system as a whole, rather than any one component.'],
+ {key:'point', num:'04', title:'Choose your pointing system', q:'How precisely does your spacecraft need to point?',
+  info:['How does a spacecraft know where it is pointing?','A satellite needs to know its orientation in space and control where it points. This requires a combination of sensors, control systems, and software.<br><br>Star trackers, Sun sensors, gyroscopes, and magnetometers help determine its orientation. Reaction wheels, magnetic torquers, and thrusters help adjust and maintain it.<br><br>Sensors determine where the spacecraft is pointing, control systems adjust its orientation, and software coordinates everything to keep it on target.<br><br>The level you choose represents the precision and stability of the overall pointing system.'],
   groups:[{key:'point', src:()=>POINTS}]},
  {key:'radio', num:'05', title:'Choose your communication system', q:'How will your spacecraft send its data?',
-  info:['How does satellite data get home?','A spacecraft can collect enormous amounts of information, but it only becomes useful once that data reaches the people and systems that need it.<br><br>Most spacecraft send data to ground stations using radio signals. Laser links use light instead, allowing much higher data rates, though their narrow beams need to be pointed very precisely at the receiving station.<br><br>The satellite collects the data. The ground station receives it. The network gets it where it needs to go.'],
+  info:['How does satellite data reach Earth?','Satellites collect and generate large amounts of data, but that information needs to reach Earth to be useful.<br><br>Most satellites communicate with ground stations using radio waves. Laser communication uses light instead, enabling much higher data rates, but requires extremely precise pointing to maintain a connection.<br><br>Once received by a ground station, the data is transmitted through networks to the people and systems that need it.'],
   groups:[{key:'radio', src:()=>RADIOS}]},
  {key:'prop', num:'06', title:'Choose your propulsion', q:'How much manoeuvring does your spacecraft need?',
-  info:['What actually moves a spacecraft?','A spacecraft changes its motion by generating thrust, usually by pushing propellant in the opposite direction.<br><br>Cold gas releases stored gas through a nozzle. It is simple and precise, but not very powerful.<br><br>Chemical propulsion produces a powerful burst of thrust for rapid manoeuvres.<br><br>Electric propulsion accelerates charged particles, which is far more efficient but produces much less thrust, so it works gradually over long periods.<br><br>And sometimes, nothing. Once a spacecraft is in the right orbit, it can coast without using propulsion.<br><br>The right propulsion system depends on the job: move quickly, manoeuvre precisely, or use propellant as efficiently as possible.'],
+  info:['What actually moves a spacecraft?','Spacecraft use propulsion systems to adjust their orbits, change their trajectories, and perform manoeuvres in space. These systems generate thrust by expelling propellant in the opposite direction.<br><br>Different propulsion technologies offer different advantages:<br><br>Cold gas propulsion releases stored gas through a nozzle, providing gentle thrust for small adjustments.<br><br>Chemical propulsion generates high thrust, enabling rapid or significant manoeuvres.<br><br>Electric propulsion uses electrical energy to accelerate propellant, offering greater efficiency but much lower thrust over longer periods.<br><br>Hybrid propulsion combines different technologies to balance their capabilities.<br><br>Not every spacecraft needs propulsion. Some can operate in their intended orbit without performing powered manoeuvres.<br><br>The right choice depends on how quickly, precisely, and efficiently your spacecraft needs to move.'],
   groups:[{key:'prop', src:()=>PROPS}]},
- {key:'power', num:'07', title:'Choose your power system', q:'How much electricity should your spacecraft generate, and how much should it store?',
-  info:['Where does satellite power come from?','Most satellites get their power from solar arrays and rechargeable batteries. Solar cells turn sunlight into electricity, powering the spacecraft and charging the batteries.<br><br>When the satellite passes through Earth\u2019s shadow, or needs more power than the solar arrays can provide, the batteries supply the difference.<br><br>A satellite\u2019s power system has to generate electricity when sunlight is available, store it for when it isn\u2019t, and distribute it to every system that needs it.'],
+ {key:'power', num:'07', title:'Choose your power system', q:'How much power does your spacecraft need to generate and store?',
+  info:['Where does satellite power come from?','Most satellites rely on solar arrays and rechargeable batteries to power their systems.<br><br>Solar arrays convert sunlight into electricity, powering onboard instruments, communications, and other essential systems while charging the batteries.<br><br>When a satellite passes through Earth\u2019s shadow or its power demands exceed what the solar arrays can generate, the batteries provide stored energy to keep it operating.<br><br>A spacecraft\u2019s power system must balance three essential functions: generating electricity, storing energy, and distributing power to every system that needs it.'],
   groups:[{key:'array', label:'Solar power', src:()=>ARRAYS},{key:'batt', label:'Battery', src:()=>BATTS}]},
- {key:'bus', num:'08', title:'Choose your spacecraft', q:'How big will your spacecraft bus be?',
-  info:['What is the spacecraft bus?','The bus is the platform that carries the payload. It holds the power system, computers, radios, pointing hardware, propulsion and thermal control. A bigger spacecraft gives you more room for equipment, power and storage, but size adds cost, weight and complexity. Your payload and your spacecraft have to fit each other.'],
+ {key:'bus', num:'08', title:'Choose your spacecraft', q:'What size spacecraft does your mission need?',
+  info:['What is the spacecraft bus?','The spacecraft bus is the platform that carries and supports the payload. It houses essential systems such as power, onboard computers, communications, pointing and attitude control, propulsion, and thermal management.<br><br>Different missions require different spacecraft sizes. Larger platforms can accommodate bigger payloads, more equipment, and greater power requirements, but they also add mass, cost, and complexity.<br><br>The goal is to choose a spacecraft bus that can support all your mission\u2019s requirements without adding unnecessary size or cost.'],
   groups:[{key:'bus', src:()=>BUSES}]}
 ];
 
@@ -692,19 +672,19 @@ function stepFeedback(stepKey, rows){
   (STEP_ROWS[stepKey]||[]).forEach(k=>{
     const r = rowBy(rows,k);
     let because = null;
-    if(k==='comms' && pl) because = `Your ${pl.name.toLowerCase()} decides this.`;
-    if(k==='point' && pl) because = `Your ${pl.name.toLowerCase()} decides this.`;
-    if(k==='bus' && pl) because = `Your payload and solar array decide this.`;
-    if(k==='power' && pl) because = `Your ${pl.name.toLowerCase()} and radio decide this.`;
+    if(k==='comms' && pl) because = `Your previous choice of ${pl.name.toLowerCase()} influences this decision.`;
+    if(k==='point' && pl) because = `Your previous choice of ${pl.name.toLowerCase()} influences this decision.`;
+    if(k==='bus' && pl) because = `Your previous choice of payload and solar array influences this decision.`;
+    if(k==='power' && pl) because = `Your previous choice of ${pl.name.toLowerCase()} and radio influences this decision.`;
     flag(r, because);
   });
   if(stepKey==='orbit' && o){
-    if(ba) flag(rowBy(rows,'power'), 'Your orbit decides how much battery you need.');
-    if(pr) flag(rowBy(rows,'prop'), 'Your orbit decides this.');
-    else if(P('orbit')==='leo') out.push({tone:'info', title:'Your propulsion will be affected', text:'Low orbit still has a trace of atmosphere dragging on the spacecraft. When you reach the propulsion step later in this game, you will want real thrusters here, to hold your path and come down safely at the end.'});
-    else if(P('orbit')==='meo') out.push({tone:'info', title:'Your propulsion will be affected', text:'Medium orbit is the most forgiving for propulsion. Once the spacecraft is inserted there is almost no drag to fight, so when you reach the propulsion step later in this game you can get away with very little.'});
+    if(ba) flag(rowBy(rows,'power'), 'Your previous choice of orbit influences this decision.');
+    if(pr) flag(rowBy(rows,'prop'), 'Your previous choice of orbit influences this decision.');
+    else if(P('orbit')==='leo') out.push({tone:'info', title:'Your propulsion will be affected', text:'Low orbit still has traces of atmosphere that gradually slow the spacecraft down. When you reach the propulsion step later in this game, consider thrusters to maintain its orbit and support a controlled deorbit at the end of the mission.'});
+    else if(P('orbit')==='meo') out.push({tone:'info', title:'Your propulsion will be affected', text:'Medium orbit has almost no atmospheric drag, so maintaining altitude requires little propulsion. However, some missions still need thrusters for orbital adjustments.'});
     else out.push({tone:'info', title:'Your propulsion will be affected', text:'A launch vehicle can place your spacecraft on the right trajectory, but some specialised orbits require onboard propulsion to complete the journey or make course corrections along the way.'});
-    if(!ba) out.push({tone:'info', title:'Your battery will be affected', text: o.batt>1 ? 'This orbit passes through Earth\u2019s shadow on every loop, so you will need enough stored energy to keep running.' : 'This orbit spends most of its time in sunlight, so you can get by with less stored energy.'});
+    if(!ba) out.push({tone:'info', title:'Your battery will be affected', text: o.batt>1 ? 'This orbit may take the spacecraft through Earth\u2019s shadow, so it needs enough stored energy to keep operating during those periods.' : 'Depending on the orbit, the spacecraft may spend long periods in sunlight, but it still needs stored energy for eclipses and other power demands.'});
   }
   if(stepKey==='payload' && pl){
     const art = w => (/^[aeiou]/.test(w) ? 'an ' : 'a ') + w;
@@ -713,7 +693,7 @@ function stepFeedback(stepKey, rows){
       `${art(minOption(BUSES, busNeed()).name.toLowerCase())} or bigger`,
       `${art(minOption(ARRAYS, powerNeed()).name.toLowerCase())} or larger`];
     out.push({tone:'info', title:'Your later choices will be affected', text:`To work at full capacity, this payload needs ${bits.join(', ')}. Anything less and it cannot do its job properly.`});
-    ['comms','point','bus','power'].forEach(k=>flag(rowBy(rows,k), 'Set by this payload:'));
+    ['comms','point','bus','power'].forEach(k=>flag(rowBy(rows,k), 'Your choice of payload influences this decision.'));
   }
   if(stepKey==='power'){
     const needArr = powerNeed();
@@ -726,7 +706,7 @@ function stepFeedback(stepKey, rows){
     } else if(ar.lvl < needArr-1){
       out.push({tone:'challenging', title:'Your power system will be affected', text:`${needLine} This array can\u2019t generate enough power, so the spacecraft couldn\u2019t run properly.`});
     } else if(ar.lvl === needArr-1){
-      out.push({tone:'possible', title:'Your power system will be affected', text:`${needLine} With this array everything runs, but there is no power to spare for spikes or additions.`});
+      out.push({tone:'possible', title:'Your power system will be affected', text:`${needLine} With this array, your components may run, but there won\u2019t be enough power to reliably handle peak demands.`});
     } else if(ar.lvl >= needArr+2){
       out.push({tone:'possible', title:'Your power system will be affected', text:`More generation than this spacecraft can use. ${ADVICE}`});
     } else {
@@ -740,13 +720,13 @@ function stepFeedback(stepKey, rows){
         ? 'This orbit passes through Earth\u2019s shadow on every loop, and this battery carries the spacecraft through it.'
         : 'This orbit spends most of its time in sunlight, so this battery has an easy job.'});
     }
-    if(ar) flag(rowBy(rows,'bus'), 'Bigger arrays need a bigger spacecraft:');
+    if(ar) flag(rowBy(rows,'bus'), 'Your choice of solar array influences this decision.');
   }
   if(stepKey==='radio' && rd && rd.lvl===5 && po && po.lvl<3){
     out.push({tone:'problem', title:'Your pointing system will be affected', text:'A laser beam is narrow and has to be held exactly on its receiver. Go back and raise your pointing system, or choose a radio instead.'});
   }
   if(stepKey==='prop' && P('prop')==='elec'){
-    if(ar) flag(rowBy(rows,'power'), 'Electric propulsion runs on electricity:');
+    if(ar) flag(rowBy(rows,'power'), 'Your choice of electric propulsion influences this decision.');
     else out.push({tone:'info', title:'Your power system will be affected', text:'Electric propulsion runs on electricity, so it raises the size of the solar array you will need at the next step.'});
   }
   const seen = new Set();
@@ -770,7 +750,7 @@ function evaluate(){
     const need = Math.max(pl.point, rd && rd.lvl===5 ? 3 : 0);
     const t = tier(po.lvl, need,
       'Close, but not quite steady enough for this instrument. Some of what it captures would be blurred or off target.',
-      'Nowhere near steady enough for this instrument. It would rarely be looking at the right thing for long enough.',
+      'Not nearly precise or stable enough for this instrument. It would struggle to stay pointed at its target long enough to collect useful data.',
       'More pointing accuracy than this mission needs. A lower-level component can save you credits for something else.');
     let fit = worst(t[0], m.pointFit[P('point')]);
     let note = t[1] || (m.pointFit[P('point')]!=='strong' ? 'This level of pointing is not what this mission usually needs.' : null);
@@ -781,7 +761,7 @@ function evaluate(){
   if(rd && pl){
     const t = tier(rd.lvl, pl.data,
       'Data bottleneck: your payload collects a little more than this radio can comfortably send.',
-      'Data bottleneck: your payload collects far more information than this radio can send. Most of it would never reach the ground.',
+      'Data bottleneck: your payload collects far more information than this radio can send. Much of the data may not reach the ground in time.',
       'Much more capacity than this payload produces. A lower-level component can save you credits for something else.');
     rows.push({key:'comms', label:'Communication', fit:t[0], note:t[1]});
   } else rows.push({key:'comms', label:'Communication'});
@@ -789,7 +769,7 @@ function evaluate(){
   if(ar && pl){
     const need = Math.max(pl.power, rd?rd.lvl-2:1, P('prop')==='elec'?2:1);
     const t = tier(ar.lvl, need,
-      'Your chosen components will run, but there won\u2019t be any power to spare for spikes or additions.',
+      'Your chosen components may run, but there won\u2019t be enough power to reliably handle peak demands.',
       'Your payload needs far more power than this array can make. It could not run properly.',
       'More generation than this spacecraft can use. A lower-level component can save you credits for something else.');
     let fit = t[0], note = t[1];
@@ -804,7 +784,7 @@ function evaluate(){
   if(bu && pl && ar){
     const need = Math.max(pl.size, ar.lvl);
     const t = tier(bu.lvl, need,
-      'Your chosen components will fit, but there won\u2019t be any space for spares or additions.',
+      'Your chosen components may fit, but there is little room or capacity to accommodate additional hardware.',
       'Space constraint: your payload and power system need more room and supporting hardware than this spacecraft can provide.',
       'Much more spacecraft than this payload needs. A lower-level component can save you credits for something else.');
     rows.push({key:'bus', label:'Spacecraft', fit:t[0], note:t[1]});
@@ -816,13 +796,13 @@ function evaluate(){
     if(fit==='possible') note = 'It will work, but it limits how much this spacecraft can change or correct its path later.';
     if(fit==='challenging') note = 'Not enough push for the manoeuvring this mission tends to need.';
     if(ob==='leo'){
-      if(pk==='none'){ fit = worst(fit,'challenging'); note = 'Low orbit still has a thin trace of atmosphere, which drags on the spacecraft. Without thrusters it loses height, drifts off its path, and cannot bring itself down safely at the end of its life.'; }
+      if(pk==='none'){ fit = worst(fit,'challenging'); note = 'Low orbit still has traces of atmosphere that gradually slow the spacecraft down. Without thrusters, it cannot correct its orbit or perform a controlled deorbit at the end of its mission.'; }
       else if(pk==='cold'){ fit = worst(fit,'possible'); note = 'Enough for small corrections, but light on push for fighting drag over a long mission in low orbit.'; }
     } else if(ob==='meo'){
-      if(pk==='none') note = 'Medium orbit is the most forgiving choice here. Once the spacecraft is inserted there is almost no drag to fight, so it can hold its path with little or no thrust.';
+      if(pk==='none') note = 'Medium orbit has almost no atmospheric drag, so the spacecraft may need little propulsion to maintain its orbit. However, some missions still require orbital adjustments.';
       else if(fit==='possible') note = 'Medium orbit asks little of propulsion once the spacecraft is inserted, so this is more than enough.';
     } else if(pk==='none'){
-      fit = worst(fit,'challenging'); note = 'Launch vehicles usually release spacecraft onto a transfer path towards this orbit rather than into it. Without propulsion, the spacecraft cannot finish the climb, correct its course, or hold its slot once it arrives.';
+      fit = worst(fit,'challenging'); note = 'Some missions require onboard propulsion to reach their final orbit, make course corrections, or maintain their position. Without it, these manoeuvres may not be possible.';
     }
     rows.push({key:'prop', label:'Manoeuvring', fit, note});
   } else rows.push({key:'prop', label:'Manoeuvring'});
@@ -1028,21 +1008,22 @@ function render(){
 function renderIntro(){
   app.innerHTML = `
   <div class="herogrid">
-    <h1 class="herohead">Every satellite is a system of systems.</h1>
+    <h1 class="herohead">Every satellite starts with a mission.</h1>
     <div class="herocopy">
-      <p class="lede">Each one is built with a particular mission in mind: what it needs to observe, how often it needs to observe it, and the conditions it has to operate in. That is where satellite engineering begins, and this is your chance to get a taste of it.</p>
-      <p>In this game, choose your mission and design a satellite capable of completing it.</p>
-      <p>The mission shapes the satellite and its components: the instruments it carries to do the job, the orbit it flies in, how precisely it needs to position itself, how much data it sends back to ground control, and how much power it needs to do all of that.</p>
-      <p>Each choice comes with a cost, and every decision affects the ones that follow. Ready?</p>
+      <p class="lede">Every satellite is designed for a purpose. What does it need to observe or accomplish? Where should it orbit? What instruments will it carry? And how will all its systems work together to complete the mission?</p>
+      <p>That’s where satellite engineering begins.</p>
+      <p>Now it’s your turn.</p>
+      <p>Choose a mission, design your own satellite, and make the engineering decisions that bring it to life. From selecting the right orbit and payload to balancing power, communications, and propulsion, every choice matters.</p>
+      <p>But there’s a catch. Every component comes at a cost, and your budget of Pixxel Credits is limited. Can you build a satellite that’s up to the mission?</p>
     </div>
     <div class="heroart"><img src="${SATPHOTO}" alt="A Pixxel satellite in orbit above Earth"></div>
   </div>
-    <h2 class="howhead">How to play?</h2>
+    <h2 class="howhead">How to play</h2>
     <div class="how">
-      <div><span class="mono">01</span><b>Choose a mission</b><span>Pick the job the satellite needs to do.</span></div>
+      <div><span class="mono">01</span><b>Choose a mission</b><span>Pick what you want your satellite to accomplish.</span></div>
       <div><span class="mono">02</span><b>Build the satellite</b><span>Choose the orbit and satellite components that best fit the mission.</span></div>
-      <div><span class="mono">03</span><b>Stay within budget</b><span>Balance performance against your budget of Pixxel Credits.</span></div>
-      <div><span class="mono">04</span><b>See the result</b><span>Find out how well the final design meets the mission.</span></div>
+      <div><span class="mono">03</span><b>Stay within budget</b><span>Make smart engineering trade-offs while staying within your Pixxel Credits.</span></div>
+      <div><span class="mono">04</span><b>See the result</b><span>Find out how well your satellite is equipped to complete its mission.</span></div>
     </div>
     <div class="pcard">
       <svg width="46" height="34" viewBox="0 0 46 34" fill="none" aria-hidden="true">
@@ -1053,11 +1034,11 @@ function renderIntro(){
       </svg>
       <div>
         <h3>What are Pixxel Credits?</h3>
-        <p>Pixxel Credits (PC) are the currency of this game. You get one pot of credits for the whole satellite, and each mission comes with its own budget. Staying within budget ensures your design can actually fly.</p>
+        <p>Pixxel Credits (PC) are the in-game currency you’ll use to build your satellite. Each mission comes with a fixed budget, and every component has a cost. Choose wisely to balance your satellite’s capabilities with what you can afford.</p>
       </div>
     </div>
     <button class="btn" id="go">Start building <span class="arw">&rarr;</span></button>
-    <aside class="disclaimer"><b>Disclaimer</b>This game simplifies satellite design for the sake of play. It introduces a few real engineering trade-offs, but it is not a simulation of how Pixxel designs or builds satellites. The components, costs and choices have been simplified for this experience. Pixxel Credits have no real-world value and are not redeemable for any credit, value or services on any of our platforms.</aside>
+    <aside class="disclaimer"><b>Disclaimer</b>This game is a simplified introduction to satellite design, created to explore real engineering concepts and trade-offs in an interactive way. It does not simulate Pixxel’s actual satellite design or manufacturing processes. Components, costs, and capabilities have been simplified for gameplay. Pixxel Credits are fictional, have no monetary value, and cannot be redeemed for products or services.</aside>
     <div class="pixline"><a href="https://www.pixxel.space/" target="_blank" rel="noopener"><img src="${LOGO}" alt="Pixxel" class="mark big"></a><span>The Planetary<br>Infrastructure Company.</span></div>`;
   document.getElementById('go').onclick=()=>{S.screen='missions';render();window.scrollTo({top:0});};
 }
@@ -1100,7 +1081,7 @@ function orbitSVG(){
 function renderMissions(){
   app.innerHTML = `
     <h1>What is your mission?</h1>
-    <p class="lede">Your mission decides what your spacecraft needs to be good at, and how many Pixxel Credits you have to build it with.</p>
+    <p class="lede">Choose what you want your satellite to accomplish. Your mission will determine the capabilities it needs and the Pixxel Credits available to build it.</p>
     <div class="missions">
       ${MISSIONS.map(m=>`<button class="mcard" data-id="${m.id}">
         <span class="mtop"><span class="t">${m.name}</span><span class="pc mono">Budget ${m.budget} PC</span></span>
@@ -1108,7 +1089,7 @@ function renderMissions(){
         <span class="needs">${m.needs.map(n=>`<span class="chip">${n}</span>`).join('')}</span>
       </button>`).join('')}
     </div>
-    <details class="info"><summary>What is a mission?</summary><p>A mission is the reason a spacecraft exists. Everything else, from its orbit to its power system, is designed around that purpose. Two satellites can look completely different and still both watch Earth: one with an optical camera, another with radar or a hyperspectral sensor. Earth observation and an intelligence satellite both look down at the planet, but they ask different questions. Earth observation measures the surface broadly, over large areas and long stretches of time. An intelligence satellite is built to watch particular places and activities in fine detail, and to get what it sees back quickly.</p></details>`;
+    <details class="info"><summary>What is a mission?</summary><p>A satellite mission defines what the spacecraft is designed to achieve. From the orbit it follows to the instruments it carries and the power it needs, every system is selected to support that goal.</p><p>Two satellites can observe the same planet in very different ways. One might use standard optical cameras to capture images of Earth’s surface, while another uses radar or hyperspectral sensors to collect different kinds of information.</p><p>The mission determines which capabilities matter most and how the spacecraft is designed.</p></details>`;
   app.querySelectorAll('.mcard').forEach(b=>b.onclick=()=>{
     S.m = MISSIONS.find(x=>x.id===b.dataset.id); S.picks={}; S.step=0; S.open=null; S.screen='build'; render(); window.scrollTo({top:0});
   });
@@ -1127,10 +1108,10 @@ function loaderText(stepKey){
   switch(stepKey){
     case 'orbit': return ['Preparing for ' + L_ORBIT[P('orbit')]];
     case 'payload': return ['Setting up the ' + (pl.job || pl.name.toLowerCase())];
-    case 'point': return [po.lvl>=3 ? 'Teaching it to hold perfectly still' : 'Teaching it which way is up'];
+    case 'point': return [po.lvl>=3 ? 'Teaching it to maintain a steady aim' : 'Teaching it which way is up'];
     case 'radio': return ['Setting up ' + L_RADIO[P('radio')]];
     case 'prop': return [P('prop')==='none' ? 'Leaving the thrusters at home' : 'Fitting ' + L_PROP[P('prop')] + ' Propulsion'];
-    case 'power': return [ar.lvl===1 ? 'Fitting Body-mounted Solar Cells' : 'Unfolding the ' + L_ARRAY[P('array')], 'Charging the Batteries'];
+    case 'power': return [ar.lvl===1 ? 'Fitting Body-mounted Solar Cells' : 'Unfolding the ' + L_ARRAY[P('array')], 'Checking the Batteries'];
     case 'bus': return ['Assembling the ' + L_BUS[P('bus')]];
     default: return ['Running the final checks'];
   }
@@ -1444,7 +1425,7 @@ function shareCanvas(craft){
   c.fillText(`${spent()} / ${m.budget} Pixxel Credits`, 80, y+60);
 
   c.fillStyle = SHARE_COL.steel; c.font = '400 23px Geist, sans-serif';
-  c.fillText('There is no perfect satellite. Only the one that makes sense for the mission.', 80, H-72);
+  c.fillText('There is no perfect satellite. Only the right one for the mission.', 80, H-72);
   return c.canvas;
 }
 
@@ -1523,7 +1504,7 @@ function renderLaunch(){
   const overBudget = bad.some(r=>r.key==='budget');
   const verdict = overBudget ? 'You\u2019re over budget. Time to raise funding?'
     : bad.length ? 'Close, but not quite mission-ready.'
-    : soft.length ? 'Your mission is ready, but with trade-offs.' : 'Your mission is ready.';
+    : soft.length ? 'Your mission is ready, but with trade-offs.' : 'Your mission is ready!';
   const can = [...m.can];
   if(left()>=0) can.push('Operate within its available budget');
   const tradeoff = (bad[0]||soft[0]);
@@ -1533,7 +1514,7 @@ function renderLaunch(){
       <div class="cleared">${verdict}</div>
       <p class="sattype">${satLabel()}</p>
       <p class="spend mono ${overBudget?'over':''}">${spent()} / ${m.budget} Pixxel Credits spent</p>
-      ${bad.length?`<p>This design has a problem with ${bad.map(r=>r.label.toLowerCase()).join(' and ')}, so it would not fly as it stands.</p>`:`<h2 style="font-size:26px;margin-top:24px">Your spacecraft can</h2><ul class="can">${can.map(c=>`<li>${c}</li>`).join('')}</ul>`}
+      ${bad.length?`<p>This design has a problem with ${bad.map(r=>r.label.toLowerCase()).join(' and ')}, so it isn\u2019t mission-ready yet.</p>`:`<h2 style="font-size:26px;margin-top:24px">Your spacecraft can</h2><ul class="can">${can.map(c=>`<li>${c}</li>`).join('')}</ul>`}
       ${tradeoff?`<h2 style="font-size:26px">Your biggest trade-off</h2><p>${tradeoff.note||'This part of the spacecraft is not what the mission would usually ask for.'}</p>`:`<p>Every system on this spacecraft suits the mission, and it came in within budget.</p>`}
 
 
@@ -1552,7 +1533,7 @@ function renderLaunch(){
       <span class="endfoot-div" aria-hidden="true"></span>
       <p class="endfoot-tag">The Planetary Infrastructure Company.</p>
     </div>
-    <h2 class="closer">A satellite is a set of trade-offs that agree with each other.</h2>
+    <h2 class="closer">A satellite is a system of engineering choices that must work together.</h2>
     <p class="lede">Real spacecraft engineering is far more complex, but the principle is the same: many systems, working together around a mission. Pixxel builds the spacecraft, sensors and software that make those missions possible.</p>
     <a class="btn" href="https://www.pixxel.space/" target="_blank" rel="noopener">Visit pixxel.space</a>
   </footer>`;
