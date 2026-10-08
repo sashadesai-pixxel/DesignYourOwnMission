@@ -336,7 +336,7 @@ header.top{position:sticky;top:0;z-index:40;background:rgba(0,0,0,.92);backdrop-
 .missiontag{font-size:13px;color:var(--muted);letter-spacing:.04em}
 .opts{grid-auto-rows:1fr}
 .opt{height:100%}
-.opt .name{min-height:2.6em;display:block}
+.opt .name{min-height:0;display:block}
 .opt .otop{align-items:flex-start}
 .opt .chips{margin-top:auto}
 
@@ -371,8 +371,9 @@ header.top{display:block;border-bottom:1px solid var(--line);padding:var(--s4) 0
 .pixline{margin:var(--s8) 0 0;padding-top:var(--s6);align-items:center;gap:var(--s5)}
 /* ---- in-game header block ---- */
 .missionhead{font-size:clamp(22px,2.6vw,30px);margin:var(--s5) 0 var(--s4)}
-.budget .bline{font-size:15px;gap:6px;align-items:baseline;color:var(--muted)}
-.budget .bline b{font-weight:700;color:var(--ink)}
+.budget .bline{font-size:15px;gap:7px;align-items:baseline;color:var(--muted)}
+.budget .bline .btag{color:var(--accent);text-transform:none;letter-spacing:0;font-size:15px}
+.budget .bline b{font-weight:700;color:var(--accent)}
 .budget.over .bline b{color:var(--bad)}
 /* ---- build step spacing ---- */
 .q{margin-bottom:var(--s5)}
@@ -419,6 +420,9 @@ main > details.info{margin-top:var(--s6)}
 .how div{background:transparent;border:1px solid var(--line);border-radius:4px}
 .how div:hover{background:transparent;border-color:var(--line)}
 .how div span.mono{color:var(--accent)}
+.opt{display:grid;grid-template-rows:auto auto;align-content:start;row-gap:var(--s2)}
+.opt .otop{margin:0}
+.opt .blurb{margin:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -483,7 +487,7 @@ const PROPS = {
 const MISSIONS = [
  { id:'eo', name:'Earth observation', budget:150,
    line:'See and measure Earth.',
-   blurb:'Observe the planet using RGB, multispectral, hyperspectral, thermal or radar sensors.',
+   blurb:'Observe the planet using standard optical, multispectral, hyperspectral, thermal or radar sensors.',
    needs:['Suitable sensing','Accurate pointing','Data capacity','Power'],
    asks:{orbit:'To measure the surface in detail, this spacecraft has to stay close to Earth.',
          power:'The sensor runs over daylight land on every pass, so power has to keep up.',
@@ -498,8 +502,8 @@ const MISSIONS = [
    warn:'Your sensor is excellent, but your spacecraft does not have enough communications capacity to handle all the data it produces.',
    can:['Measure Earth\u2019s surface with its chosen sensor','Point accurately at Earth','Send its data to the ground'],
    payloads:[
-    {id:'opt', name:'RGB camera', cost:8, fit:'strong', data:1, power:1, size:1, point:3,
-     art:'lens', job:'RGB camera that photographs the surface', note:'Records red, green and blue light, so it shows what the surface looks like in daylight and clear skies. It cannot tell you what things are made of.'},
+    {id:'opt', name:'Standard optical camera', cost:8, fit:'strong', data:1, power:1, size:1, point:3,
+     art:'lens', job:'standard optical camera that photographs the surface', note:'Records red, green and blue light, so it shows what the surface looks like in daylight and clear skies. It cannot tell you what things are made of.'},
     {id:'ms', name:'Multispectral sensor', cost:12, fit:'strong', data:2, power:2, size:2, point:3,
      art:'bands', job:'sensor that reads a few bands of light', note:'Reads a handful of broad bands, enough to tell vegetation, water, soil and built surfaces apart.'},
     {id:'therm', name:'Thermal sensor', cost:12, fit:'strong', data:2, power:2, size:2, point:2,
@@ -599,33 +603,33 @@ const MISSIONS = [
 
  { id:'intel', name:'Special remote sensing', budget:175,
    line:'Gather information from above.',
-   blurb:'Collect radar imagery and radio-frequency signals, usually as a swarm of spacecraft flying together.',
-   needs:['Specialised orbit','Swarm formation','Data capacity','Power'],
-   asks:{orbit:'These spacecraft rarely fly alone. A swarm has to share a carefully shaped path so its members stay in formation and cover the same ground.',
+   blurb:'Collect radar imagery and radio-frequency signals, usually as a group of spacecraft flying in formation.',
+   needs:['Specialised orbit','Formation flying','Data capacity','Power'],
+   asks:{orbit:'These spacecraft rarely fly alone. A formation has to share a carefully shaped path so its members stay together and cover the same ground.',
          power:'Radar and signal receivers draw heavily, and they draw the most when passing over a target.',
          control:'Antennas and radar apertures have to be aimed and held while the spacecraft passes overhead.',
-         radio:'What the swarm collects has to come down quickly, and securely.'},
-   orbitFit:{leo:['possible','Close to its targets, but holding a swarm in formation here takes constant work against drag.'],
+         radio:'What the formation collects has to come down quickly, and securely.'},
+   orbitFit:{leo:['possible','Close to its targets, but holding a formation together here takes constant work against drag.'],
              meo:['possible','Wider coverage for each spacecraft, at the cost of detail and a harsher radiation environment.'],
              geo:['challenging','Far too distant for the signal strength and detail this mission depends on.'],
-             spec:['strong','A path shaped for a swarm: the spacecraft keep formation, share coverage, and revisit the same ground together.']},
+             spec:['strong','A path shaped for formation flying: the spacecraft stay together, share coverage, and revisit the same ground as a group.']},
    pointFit:{basic:'possible', precise:'strong', high:'strong', ultra:'possible'},
    propFit:{none:'challenging', cold:'possible', chem:'strong', elec:'strong', hybrid:'strong'},
    warn:'Your payload can collect a great deal, but the spacecraft cannot hold its formation or aim well enough to use it.',
-   can:['Collect radar imagery or radio signals over chosen areas','Hold formation with the rest of its swarm','Get what it collects back quickly'],
+   can:['Collect radar imagery or radio signals over chosen areas','Hold formation with the rest of its group','Get what it collects back quickly'],
    payloads:[
     {id:'rf', name:'Radio-frequency signals receiver', cost:25, fit:'strong', data:3, power:3, size:3, point:2,
      art:'dipoles', job:'receiver that listens for transmissions', note:'Listens for radar, radio, and other transmissions, and works out where they came from.'},
     {id:'geo', name:'Signal geolocation payload', cost:22, fit:'strong', data:2, power:3, size:2, point:2,
-     art:'multiant', job:'payload that locates transmitters', note:'Pinpoints a transmitter by comparing what several spacecraft in the swarm hear. It only works as part of a formation.'},
+     art:'multiant', job:'payload that locates transmitters', note:'Pinpoints a transmitter by comparing what several spacecraft in the formation hear. It only works as part of a group.'},
     {id:'sar', name:'Radar imager', cost:28, fit:'strong', data:3, power:4, size:3, point:2,
      art:'radar', job:'radar that images through cloud and darkness', note:'Images the ground with radar, so it sees through clouds and works in darkness. It needs a lot of power.'},
     {id:'wide', name:'Wideband signal recorder', cost:30, fit:'strong', data:4, power:3, size:4, point:2,
      art:'waves', job:'recorder that captures a wide slice of the spectrum', note:'Records a wide slice of the radio spectrum at once, which produces an enormous amount of raw data.'},
     {id:'ir', name:'Infrared sensor', cost:15, fit:'strong', data:2, power:2, size:2, point:3,
      art:'thermal', job:'sensor that picks up heat at night', note:'Picks up heat, which shows activity at night. Useful alongside radar, thin on its own.'},
-    {id:'opt', name:'RGB camera', cost:12, fit:'strong', data:2, power:1, size:2, point:3,
-     art:'lens', job:'RGB camera that photographs the surface', note:'Red, green and blue light only: clear pictures in daylight and clear skies, which is exactly when radar and signal payloads are least needed.'}]}
+    {id:'opt', name:'Standard optical camera', cost:12, fit:'strong', data:2, power:1, size:2, point:3,
+     art:'lens', job:'standard optical camera that photographs the surface', note:'Red, green and blue light only: clear pictures in daylight and clear skies, which is exactly when radar and signal payloads are least needed.'}]}
 ];
 
 const STEPS = [
@@ -663,12 +667,19 @@ const spent = () => Object.values(PARTS()).reduce((a,p)=>a+(p?p.cost:0),0);
 const left = () => S.m ? S.m.budget - spent() : 0;
 
 
+const ADVICE = 'A lower-level component can save you credits for something else.';
+const tidy = t => { if(!t) return t;
+  const parts = t.split(/(?<=[.!?])\s+/).map(x=>x.trim()).filter(Boolean);
+  const seen = new Set(); const keep = [];
+  parts.forEach(p=>{ const k=p.toLowerCase(); if(!seen.has(k)){ seen.add(k); keep.push(p); } });
+  return keep.join(' '); };
 const minOption = (src, need) => Object.values(src).find(o => o.lvl >= need) || Object.values(src).slice(-1)[0];
 const powerNeed = () => { const {pl,rd} = PARTS(); return Math.max(pl?pl.power:1, rd?rd.lvl-2:1, P('prop')==='elec'?2:1); };
 const busNeed = () => { const {pl,ar} = PARTS(); return Math.max(pl?pl.size:1, ar?ar.lvl:1); };
 const rowBy = (rows,k) => rows.find(r=>r.key===k);
 
-const STEP_ROWS = {orbit:['orbit'], power:['power'], payload:['sensing'], point:['point'], radio:['comms'], bus:['bus'], prop:['prop']};
+const STEP_ROWS = {orbit:['orbit'], power:[], payload:['sensing'], point:['point'], radio:['comms'], bus:['bus'], prop:['prop']};
+const FOCUS_ROWS = {orbit:['orbit'], power:['power'], payload:['sensing'], point:['point'], radio:['comms'], bus:['bus'], prop:['prop']};
 
 const AFFECTED = {orbit:'orbit', sensing:'payload', point:'pointing system', comms:'communication system',
   power:'power system', bus:'spacecraft', prop:'manoeuvring'};
@@ -692,7 +703,7 @@ function stepFeedback(stepKey, rows){
     if(pr) flag(rowBy(rows,'prop'), 'Your orbit decides this.');
     else if(P('orbit')==='leo') out.push({tone:'info', title:'Your propulsion will be affected', text:'Low orbit still has a trace of atmosphere dragging on the spacecraft. When you reach the propulsion step later in this game, you will want real thrusters here, to hold your path and come down safely at the end.'});
     else if(P('orbit')==='meo') out.push({tone:'info', title:'Your propulsion will be affected', text:'Medium orbit is the most forgiving for propulsion. Once the spacecraft is inserted there is almost no drag to fight, so when you reach the propulsion step later in this game you can get away with very little.'});
-    else out.push({tone:'info', title:'Your propulsion will be affected', text:'A rocket cannot simply drop a spacecraft into this orbit and leave it there, so plan on real propulsion when you reach that step later in this game.'});
+    else out.push({tone:'info', title:'Your propulsion will be affected', text:'A launch vehicle can place your spacecraft on the right trajectory, but some specialised orbits require onboard propulsion to complete the journey or make course corrections along the way.'});
     if(!ba) out.push({tone:'info', title:'Your battery will be affected', text: o.batt>1 ? 'This orbit passes through Earth\u2019s shadow on every loop, so you will need enough stored energy to keep running.' : 'This orbit spends most of its time in sunlight, so you can get by with less stored energy.'});
   }
   if(stepKey==='payload' && pl){
@@ -705,8 +716,30 @@ function stepFeedback(stepKey, rows){
     ['comms','point','bus','power'].forEach(k=>flag(rowBy(rows,k), 'Set by this payload:'));
   }
   if(stepKey==='power'){
-    if(!pl) out.push({tone:'info', title:'Your power system will be affected', text:'Your payload comes next, and it decides how much power the spacecraft needs. You can come back and change this once you have picked one.'});
-    if(pl) out.push({tone:'info', title:'Your power system will be affected', text:`Your ${pl.name.toLowerCase()}${rd?', your '+rd.name.toLowerCase():''}${P('prop')==='elec'?' and your electric propulsion':''} all draw on this. It needs at least a ${minOption(ARRAYS, powerNeed()).name.toLowerCase()}.`});
+    const needArr = powerNeed();
+    const draws = [pl && pl.name.toLowerCase(), rd && rd.name.toLowerCase(), P('prop')==='elec' && 'electric propulsion'].filter(Boolean);
+    const drawList = draws.length>1 ? draws.slice(0,-1).join(', ') + ' and ' + draws[draws.length-1] : draws[0];
+    const arrName = minOption(ARRAYS, needArr).name.toLowerCase();
+    const needLine = `Your ${drawList || 'payload'} draw${draws.length===1?'s':''} on this. It needs at least ${/^[aeiou]/.test(arrName)?'an':'a'} ${arrName}.`;
+    if(!ar){
+      out.push({tone:'info', title:'Your power system will be affected', text:needLine});
+    } else if(ar.lvl < needArr-1){
+      out.push({tone:'challenging', title:'Your power system will be affected', text:`${needLine} This array can\u2019t generate enough power, so the spacecraft couldn\u2019t run properly.`});
+    } else if(ar.lvl === needArr-1){
+      out.push({tone:'possible', title:'Your power system will be affected', text:`${needLine} With this array everything runs, but there is no power to spare for spikes or additions.`});
+    } else if(ar.lvl >= needArr+2){
+      out.push({tone:'possible', title:'Your power system will be affected', text:`More generation than this spacecraft can use. ${ADVICE}`});
+    } else {
+      out.push({tone:'info', title:'Your power system will be affected', text:needLine});
+    }
+    if(ba){
+      const bneed = Math.max(o?o.batt:1, pl?(pl.power>=4?2:1):1);
+      if(ba.lvl < bneed) out.push({tone:'possible', title:'Your battery will be affected', text:'Storage is short for the time this spacecraft spends in Earth\u2019s shadow, so it would lose power before the next sunlit pass.'});
+      else if(ba.lvl >= bneed+2) out.push({tone:'possible', title:'Your battery will be affected', text:`More stored energy than this spacecraft will draw on. ${ADVICE}`});
+      else out.push({tone:'info', title:'Your battery will be affected', text: (o && o.batt>1)
+        ? 'This orbit passes through Earth\u2019s shadow on every loop, and this battery carries the spacecraft through it.'
+        : 'This orbit spends most of its time in sunlight, so this battery has an easy job.'});
+    }
     if(ar) flag(rowBy(rows,'bus'), 'Bigger arrays need a bigger spacecraft:');
   }
   if(stepKey==='radio' && rd && rd.lvl===5 && po && po.lvl<3){
@@ -717,7 +750,8 @@ function stepFeedback(stepKey, rows){
     else out.push({tone:'info', title:'Your power system will be affected', text:'Electric propulsion runs on electricity, so it raises the size of the solar array you will need at the next step.'});
   }
   const seen = new Set();
-  return out.filter(x => { const k = x.title+x.text; if(seen.has(k)) return false; seen.add(k); return true; });
+  return out.filter(x => { x.text = tidy(x.text);
+    const k = x.text.toLowerCase(); if(seen.has(k)) return false; seen.add(k); return true; });
 }
 
 function tier(have, need, under1, under2, over){
@@ -756,15 +790,15 @@ function evaluate(){
     const need = Math.max(pl.power, rd?rd.lvl-2:1, P('prop')==='elec'?2:1);
     const t = tier(ar.lvl, need,
       'Your chosen components will run, but there won\u2019t be any power to spare for spikes or additions.',
-      'Your payload needs far more power than these arrays can make. It could not run properly.',
+      'Your payload needs far more power than this array can make. It could not run properly.',
       'More generation than this spacecraft can use. A lower-level component can save you credits for something else.');
     let fit = t[0], note = t[1];
     if(ba){
       const bneed = Math.max(o?o.batt:1, pl.power>=4?2:1);
       if(ba.lvl < bneed){ fit = worst(fit,'possible'); note = (note?note+' ':'') + 'Storage is short for the time this spacecraft spends in Earth\u2019s shadow.'; }
-      else if(ba.lvl >= bneed+2){ fit = worst(fit,'possible'); note = (note?note+' ':'') + 'More stored energy than this spacecraft will draw on. A lower-level component can save you credits for something else.'; }
+      else if(ba.lvl >= bneed+2){ fit = worst(fit,'possible'); note = (note?note+' ':'') + 'More stored energy than this spacecraft will draw on. ' + ADVICE; }
     }
-    rows.push({key:'power', label:'Power', fit, note});
+    rows.push({key:'power', label:'Power', fit, note:tidy(note)});
   } else rows.push({key:'power', label:'Power'});
 
   if(bu && pl && ar){
@@ -788,7 +822,7 @@ function evaluate(){
       if(pk==='none') note = 'Medium orbit is the most forgiving choice here. Once the spacecraft is inserted there is almost no drag to fight, so it can hold its path with little or no thrust.';
       else if(fit==='possible') note = 'Medium orbit asks little of propulsion once the spacecraft is inserted, so this is more than enough.';
     } else if(pk==='none'){
-      fit = worst(fit,'challenging'); note = 'A rocket cannot simply drop a spacecraft into this orbit and leave it there. Without propulsion it cannot reach or hold this path.';
+      fit = worst(fit,'challenging'); note = 'Launch vehicles usually release spacecraft onto a transfer path towards this orbit rather than into it. Without propulsion, the spacecraft cannot finish the climb, correct its course, or hold its slot once it arrives.';
     }
     rows.push({key:'prop', label:'Manoeuvring', fit, note});
   } else rows.push({key:'prop', label:'Manoeuvring'});
@@ -972,8 +1006,8 @@ function budgetBar(){
   const l = left(), used = spent(), pct = Math.min(100, Math.round(used/S.m.budget*100));
   return `<div class="budget ${l<0?'over':''}">
     <div class="bline mono">
-      <span>Pixxel Credits</span><b>${l} PC</b>
-      <span>left to spend of ${S.m.budget} PC to build ${/^[aeiou]/i.test(S.m.name)?'an':'a'} ${satLabel().toLowerCase()}</span>
+      <span class="btag">Pixxel Credits</span> <b>${l} PC</b>
+      <span>left to spend of ${S.m.budget} PC</span>
     </div>
     <div class="bmeter"><span style="width:${pct}%"></span></div>
   </div>`;
@@ -1128,8 +1162,8 @@ function wireReadiness(){
 function groupFeedback(st, key, fb){
   if(st.groups.length<2) return '';
   const want = key==='array'
-    ? f => /power|solar|array|panel/i.test(f.title + f.text)
-    : f => /batter|stored energy|shadow/i.test(f.title + f.text);
+    ? f => /power system|spacecraft will be affected/i.test(f.title)
+    : f => /battery will be affected/i.test(f.title);
   const mine = fb.filter(want);
   return mine.length ? `<div class="fbs">${mine.map(f=>`<div class="fb ${f.tone}"><b>${f.title}</b>${f.text}</div>`).join('')}</div>` : '';
 }
@@ -1168,7 +1202,7 @@ ${S.step===0?'<span></span>':'<button class="btn ghost" id="back">Back</button>'
       <div class="satwrap">${satSVG()}</div>
       <h4 class="glab">This mission needs:</h4>
       <div class="needs">${m.needs.map(n=>`<span class="chip">${n}</span>`).join('')}</div>
-      ${dashboard(rows,false,STEP_ROWS[st.key],true)}
+      ${dashboard(rows,false,FOCUS_ROWS[st.key],true)}
     </aside>
   </div>`;
   app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
